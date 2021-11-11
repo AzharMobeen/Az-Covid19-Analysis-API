@@ -1,0 +1,15 @@
+server:
+  port: 8081
+
+spring:
+  h2:
+    console:
+      enabled:  true
+  datasource:
+    platform: h2
+    username: sa
+    password: sa
+    url:  jdbc:h2:mem:Az
+
+jwt:
+  secret: covid19-analysis-secret

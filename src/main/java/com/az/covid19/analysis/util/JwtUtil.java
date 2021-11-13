@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cglib.core.internal.Function;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import java.util.Date;
@@ -45,13 +46,15 @@ public class JwtUtil {
     public void validateTokenExpiration(String token) {
         if(extractExpiration(token).before(new Date()))
             throw  new CustomRuntimeException("JWT is expired",
-                    "JWT is valid only for 30 min, please generate new JWT");
+                    "JWT is valid only for 30 min, please generate new JWT",
+                    HttpStatus.NOT_ACCEPTABLE);
     }
 
     public void validateToken(String token) {
         validateTokenExpiration(token);
         if(!userRepository.existsByJwt(token)) {
-            throw  new CustomRuntimeException("JWT is wrong", "JWT is no longer valid for this user");
+            throw new CustomRuntimeException("JWT is wrong", "JWT is no longer valid for this user",
+                    HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
@@ -64,7 +67,7 @@ public class JwtUtil {
     private String createToken(Map<String, Object> claims, String subject) {
 
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                //           converting milli seconds to  10 Hr     (1sec, 1min, 30min)
+                //           converting milli seconds to  0.5 Hr     (1sec, 1min, 30min)
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30 ))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
     }

@@ -20,8 +20,8 @@ public class CustomExceptionHandler {
     @Value("${error.message.expiredJwt:Provided jwt is expired}")
     private String expiredJwtMessage;
 
-    @Value("${error.message.curreptJwt:Provided jwt is not correct}")
-    private String curreptJwtMessage;
+    @Value("${error.message.currentJwt:Provided jwt is not correct}")
+    private String currentJwtMessage;
 
     @ExceptionHandler(value = {BadCredentialsException.class})
     public ResponseEntity handleBadCredentialsException(BadCredentialsException exception, WebRequest request){
@@ -32,19 +32,19 @@ public class CustomExceptionHandler {
     @ExceptionHandler(value = {ExpiredJwtException.class})
     public ResponseEntity handleExpiredJwtException(ExpiredJwtException exception, WebRequest request){
         ErrorMessage errorMessage = buildErrorMessage(expiredJwtMessage, request, exception.getMessage());
-        return new ResponseEntity(errorMessage, HttpStatus.GATEWAY_TIMEOUT);
+        return new ResponseEntity(errorMessage, HttpStatus.NOT_ACCEPTABLE);
     }
 
     @ExceptionHandler(value = {MalformedJwtException.class})
     public ResponseEntity handleMalformedJwtException(MalformedJwtException exception, WebRequest request){
-        ErrorMessage errorMessage = buildErrorMessage(curreptJwtMessage, request, exception.getMessage());
-        return new ResponseEntity(errorMessage, HttpStatus.GATEWAY_TIMEOUT);
+        ErrorMessage errorMessage = buildErrorMessage(currentJwtMessage, request, exception.getMessage());
+        return new ResponseEntity(errorMessage, HttpStatus.NOT_ACCEPTABLE);
     }
 
     @ExceptionHandler(value = {CustomRuntimeException.class})
     public ResponseEntity handleCustomRuntimeException(CustomRuntimeException exception, WebRequest request){
         ErrorMessage errorMessage = buildErrorMessage(exception.getMessage(), request, exception.getDetail());
-        return new ResponseEntity(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity(errorMessage, exception.getHttpStatus());
     }
 
     @ExceptionHandler(value = {RuntimeException.class})

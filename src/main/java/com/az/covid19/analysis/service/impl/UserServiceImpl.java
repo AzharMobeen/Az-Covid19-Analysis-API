@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -62,7 +63,12 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    // As per requirement we need to generate token for any username
+    @Override
+    public List<User> fetchAllUsers() {
+        return userRepository.findAll();
+    }
+
+    // As per requirement we need to generate token for any username/password
     @Override
     public UserDetails loadUserByUsername(String username) {
         log.debug("loadUserByUsername method called! [{}]", username);

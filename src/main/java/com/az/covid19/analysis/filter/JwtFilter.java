@@ -6,6 +6,7 @@ import com.az.covid19.analysis.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,7 +41,7 @@ public class JwtFilter extends OncePerRequestFilter {
         log.debug("doFilterInternal request{}, response{}", request,response);
 
         try{
-            if(request.getRequestURI().contains(AppConstants.API_COVID_ANALYSIS_URI)) {
+            if(request.getRequestURI().contains(AppConstants.URI_FOR_COVID_ANALYSIS)) {
                 final String authorizationHeader = request.getHeader(AppConstants.AUTHORIZATION);
                 validateAuthorizationHeader(authorizationHeader);
                 String userName = null;
@@ -69,10 +70,10 @@ public class JwtFilter extends OncePerRequestFilter {
     private void validateAuthorizationHeader(String authorizationHeader) {
         if(!StringUtils.hasText(authorizationHeader))
             throw new CustomRuntimeException("Authorization is missing",
-                    "Authorization is required in header for this URI");
+                    "Authorization is required in header for this URI", HttpStatus.BAD_REQUEST);
 
         if(!authorizationHeader.contains("Bearer "))
             throw new CustomRuntimeException("Authorization value is invalid",
-                    "Authorization value in header should be  followed by Bearer JWT");
+                    "Authorization value in header should be  followed by Bearer JWT", HttpStatus.BAD_REQUEST);
     }
 }

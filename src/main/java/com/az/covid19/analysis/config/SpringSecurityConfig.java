@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity
+//@EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String[] AUTH_WHITELIST = {
@@ -33,7 +33,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             // other public endpoints
-            AppConstants.API_USER_AUTHENTICATE_URI,
+            AppConstants.URI_FOR_USERS + AppConstants.URI_FOR_USERS_AUTHENTICATE,
+            AppConstants.URI_FOR_USERS,
             AppConstants.H2_CONSOLE_URI,
     };
 
@@ -50,7 +51,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll().anyRequest().authenticated()
+        http.csrf().disable()
+                .authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll().anyRequest().authenticated()
                 .and().headers().frameOptions().sameOrigin()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

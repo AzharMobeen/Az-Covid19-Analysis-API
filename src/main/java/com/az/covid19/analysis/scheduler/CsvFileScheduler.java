@@ -18,7 +18,7 @@ import java.net.URLConnection;
 public class CsvFileScheduler {
 
     // 21600000 milliseconds = 6 hr | 2000 milliseconds = 2 seconds
-    @Scheduled(fixedDelay = 21600000, initialDelay = 2000)
+    @Scheduled(fixedDelay = 21600000, initialDelay = 21600000)
     public void processCsvFile(){
         try {
             URL url = new URL(AppConstants.CSV_URL);

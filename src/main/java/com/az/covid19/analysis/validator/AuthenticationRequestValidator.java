@@ -3,6 +3,7 @@ package com.az.covid19.analysis.validator;
 import com.az.covid19.analysis.dto.AuthenticationRequest;
 import com.az.covid19.analysis.exception.CustomRuntimeException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -13,8 +14,10 @@ public class AuthenticationRequestValidator {
     public void validateRequest(AuthenticationRequest request) {
         log.debug("validateRequest request {}", request);
         if(!StringUtils.hasText(request.getUserName()))
-            throw new CustomRuntimeException("Username is missing", "Provided username is not valid");
+            throw new CustomRuntimeException("Username is missing", "Provided username is not valid",
+                    HttpStatus.BAD_REQUEST);
         if(!StringUtils.hasText(request.getPassword()))
-            throw new CustomRuntimeException("Password is missing", "Provided password is not valid");
+            throw new CustomRuntimeException("Password is missing", "Provided password is not valid",
+                    HttpStatus.BAD_REQUEST);
     }
 }

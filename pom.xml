@@ -48,11 +48,6 @@
 			<version>5.5.2</version>
 		</dependency>
 
-<!--		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-boot-starter</artifactId>
-			<version>3.0.0</version>
-		</dependency>-->
 <!--		For SpringDoc-Openapi-UI-->
 		<dependency>
 			<groupId>org.springdoc</groupId>
@@ -114,6 +109,7 @@
 						<exclude>**/*exception/**/*</exclude>
 						<exclude>**/*entity/**/*</exclude>
 						<exclude>**/*dto/*</exclude>
+						<exclude>**/*filter/*</exclude>
 						<exclude>**/*config/*</exclude>
 						<exclude>**/*constant/*</exclude>
 					</excludes>
@@ -138,6 +134,28 @@
 				<groupId>org.sonarsource.scanner.maven</groupId>
 				<artifactId>sonar-maven-plugin</artifactId>
 				<version>3.9.1.2184</version>
+			</plugin>
+			<!--For Docker Image-->
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>dockerfile-maven-plugin</artifactId>
+				<version>1.4.13</version>
+				<executions>
+					<execution>
+						<id>default</id>
+						<goals>
+							<goal>build</goal>
+							<goal>push</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<repository>${project.artifactId}</repository>
+					<tag>${project.version}</tag>
+					<buildArgs>
+						<JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
+					</buildArgs>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

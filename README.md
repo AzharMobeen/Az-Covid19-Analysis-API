@@ -35,9 +35,12 @@ Use the raw option on GitHub to download the csv data file.
 * H2 (In-Memory DB)
 * SpringDoc-Openapi-UI 1.5.12
   * Swagger-UI 3.52.5
+* OpenCSV 5.5.2
+* Junit 5
 * Maven
   * Maven plugin JaCoCo 0.8.7
   * Maven plugin Sonar 3.9.1.2184
+  * dockerfile-maven-plugin 1.4.13
 * Intellij IDEA
 ---
 
@@ -52,21 +55,53 @@ Use the raw option on GitHub to download the csv data file.
 ##### 3. For Documentation
 * For API documentation I have used [`SpringDoc`](https://springdoc.org/) It's using Open API 3.
 * After running application please check [this link](http://localhost:8081/swagger-ui/index.html)
+* It will explain very well about all the end points, Request, Response Java Objects along with Ready Rest Client
+##### 4. How To Run:
+* Run below command from project folder
+```
+./mvnw clean install spring-boot:run
+```
+* Or Run as Docker image
+```
+./mvnw package
+```
+```
+docker run -p 8081:8081 az-covid19-analysis:0.0.1
+```
+
 ---
+##### 5. How To Use:
+* Please visit [this link](http://localhost:8081/swagger-ui/index.html)
+* First call `/api/v1/authenticate` API by providing any username/password.
+* In the response you will get jwt token copy that token and pass to header Authorization as Bearer Token for `Covid Analysis API's`.
+* Simplest way to use application is:
+  * Click on `/api/v1/authenticate` API and then click on `Try it out` button [on top of right side].
+![authenticate1](authentication1.jpeg)
+  * Add username/password and click on execute button
+![authenticate2](authentication2.jpeg)
+  * Copy the jwt from response
+![authenticate3](authentication3.png)
+  * Select any api from `Covid Analysis Controller`
+![covidApi1](covidAPI1.png)
+  * Please click lock icon from top right side
+  * Past here the copied JWT and click on `Authorize`, then please close the popup.
+![CovidApi2](CovidApi2.png)
+  * Now you can click on `Try it out` button and give required param and then execute. **Date Format is MM-dd-yy**
+![CovidApi3](CovidApi3.png)
+* Or simple click on lock icon and put `token` (without Bearer)
+
 
 > RESOURCES
 
-| # | URI | Desc |
---- | --- | ---- |
-1   | /api/users/authenticate | It required username and password for JWT |
-2   | | |
----
+![URI-Details](URI.jpeg)
 
-##### How To Run:
-```
-./mvnw install spring-boot:run
-```
----
+
+
+> Test Coverage Report
+
+![JaCoCo-Report](JaCoCoReport.png)
+
+
 
 > FUTURE IMPROVEMENTS
 
@@ -75,4 +110,4 @@ Although it's completed with respect to above requirements, but we can have belo
 * We should use Apache connect [sink and source] and ignore scheduler.
 * For `/api/users` we can have `ADMIN` role, so that only admin can access this endpoint.
 * For `/api/users` we can handle pagination because if users exceed then api response will be slow.
-* 
+* Unit test coverage at least 85% required. 

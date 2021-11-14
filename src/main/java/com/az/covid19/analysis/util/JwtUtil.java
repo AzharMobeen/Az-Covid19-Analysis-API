@@ -23,7 +23,7 @@ public class JwtUtil {
 
     private final UserRepository userRepository;
 
-    @Value("${jwt.secret}")
+    @Value("${jwt.secret:covid19-analysis-secret}")
     private String SECRET_KEY;
 
     public String extractUsername(String token) {

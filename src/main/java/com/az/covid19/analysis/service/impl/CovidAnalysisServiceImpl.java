@@ -20,7 +20,6 @@ import org.springframework.util.CollectionUtils;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -40,13 +39,13 @@ public class CovidAnalysisServiceImpl implements CovidAnalysisService {
 
     @Override
     public AllNewCasesResponse getTodayAllNewCases() {
-        List<CovidReport> covidReportList = getAllNewCasesFromCSV(true, 0);
+        List<CovidReport> covidReportList = covidAnalysisServiceHelper.getAllNewCasesFromCSV(true, 0);
         return AllNewCasesResponse.builder().covidReportList(covidReportList).build();
     }
 
     @Override
     public AllNewCasesResponse getTodayAllNewCasesDescOrder() {
-        List<CovidReport> covidReportList = getAllNewCasesFromCSV(true, 0);
+        List<CovidReport> covidReportList = covidAnalysisServiceHelper.getAllNewCasesFromCSV(true, 0);
         covidReportList = covidReportList.parallelStream()
                 .sorted(Comparator.comparing(CovidReport::getTodayCases).reversed())
                 .collect(Collectors.toList());
@@ -56,7 +55,7 @@ public class CovidAnalysisServiceImpl implements CovidAnalysisService {
     @Override
     public CovidReport getTodayAllNewCasesInSpecificCountry(String country) {
         covidAnalysisValidator.validateCountry(country);
-        List<CovidReport> covidReportList = getAllNewCasesFromCSV(true, 0);
+        List<CovidReport> covidReportList = covidAnalysisServiceHelper.getAllNewCasesFromCSV(true, 0);
         Optional<CovidReport> covidReportOptional = covidReportList.parallelStream()
                 .filter(covidReport -> covidReport.getCountry().equalsIgnoreCase(country))
                 .findFirst();
@@ -72,7 +71,7 @@ public class CovidAnalysisServiceImpl implements CovidAnalysisService {
         LocalDate sinceDate = covidAnalysisServiceHelper.convertStringToLocalDate(date);
         covidAnalysisValidator.validateDateWithCurrentDate(sinceDate);
         long days =  ChronoUnit.DAYS.between(sinceDate, LocalDate.now());
-        List<CovidReport> covidReportList = getAllNewCasesFromCSV(false, (int) days);
+        List<CovidReport> covidReportList = covidAnalysisServiceHelper.getAllNewCasesFromCSV(false, (int) days);
         covidReportList = covidReportList.parallelStream()
                 .filter(covidReport -> covidReport.getCountry().equalsIgnoreCase(country))
                 .collect(Collectors.toList());
@@ -84,32 +83,12 @@ public class CovidAnalysisServiceImpl implements CovidAnalysisService {
 
     @Override
     public AllNewCasesResponse getTodayAllNewCasesForTopNCountries(int topN) {
-        List<CovidReport> covidReportList = getAllNewCasesFromCSV(true, 0);
+        List<CovidReport> covidReportList = covidAnalysisServiceHelper.getAllNewCasesFromCSV(true, 0);
         covidReportList = covidReportList.parallelStream()
                 .sorted(Comparator.comparing(CovidReport::getTodayCases).reversed()).limit(topN)
                 .collect(Collectors.toList());
         return AllNewCasesResponse.builder().covidReportList(covidReportList).build();
     }
 
-    private List<CovidReport> getAllNewCasesFromCSV(boolean onlyTodayCases, int fromIndex) {
-        CSVParser csvParser = new CSVParserBuilder().withSeparator(',').build();
-        List<CovidReport> covidReportList = new ArrayList<>();
-        try (InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(AppConstants.CSV_FILE))) {
-            CSVReader reader = new CSVReaderBuilder(inputStreamReader).withCSVParser(csvParser).withSkipLines(1).build();
-            String[] lineInArray;
-            while ((lineInArray = reader.readNext()) != null) {
-                CovidReport.CovidReportBuilder covidReport = CovidReport.builder().state(lineInArray[0])
-                    .country(lineInArray[1]).latitude(covidAnalysisServiceHelper.parseStringToDouble(lineInArray[2]))
-                    .longitude(covidAnalysisServiceHelper.parseStringToDouble(lineInArray[3]))
-                    .todayCases(covidAnalysisServiceHelper.parseStringToInt(lineInArray[lineInArray.length-1]));
-                if(!onlyTodayCases)
-                    covidReport.dateWiseCases(covidAnalysisServiceHelper.buildDateWiseCases(lineInArray, fromIndex));
-                covidReportList.add(covidReport.build());
-            }
-            log.info("Total number of records {} ", covidReportList.size());
-        } catch (IOException | CsvValidationException ex) {
-            log.error("Exception occurred while processing CSV file :: ", ex);
-        }
-        return covidReportList;
-    }
+
 }

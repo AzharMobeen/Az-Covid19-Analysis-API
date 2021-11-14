@@ -43,8 +43,8 @@ public class UserServiceImpl implements UserService {
     }
 
     // It will create user only if user doesn't exist with provided username
-    @Override
-    public User createNewUser(String userName, String password) {
+
+    private User createNewUser(String userName, String password) {
         Optional<User> userOptional = userRepository.findByUserName(userName);
         User newUser = null;
         if(!userOptional.isPresent()) {
@@ -58,8 +58,8 @@ public class UserServiceImpl implements UserService {
         return newUser;
     }
 
-    @Override
-    public void updateUserJwt(User user) {
+
+    private void updateUserJwt(User user) {
         userRepository.save(user);
     }
 

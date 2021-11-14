@@ -17,9 +17,10 @@ import java.net.URLConnection;
 @Component
 public class CsvFileScheduler {
 
-    // 21600000 milliseconds = 6 hr | 2000 milliseconds = 2 seconds
-    @Scheduled(fixedDelay = 21600000, initialDelay = 21600000)
+    // 21600000 milliseconds = 6 hr | 1000 milliseconds = 1 seconds
+    @Scheduled(fixedDelay = 21600000, initialDelay = 1000)
     public void processCsvFile(){
+        log.info("CsvFileScheduler scheduler started");
         try {
             URL url = new URL(AppConstants.CSV_URL);
             URLConnection urlConnection = url.openConnection();
@@ -27,6 +28,7 @@ public class CsvFileScheduler {
         } catch (Exception exception) {
             log.error("Exception occurred while processing CSV file", exception);
         }
+        log.info("CsvFileScheduler scheduler successfully completed!");
     }
 
     public static void saveCSVFile(InputStream inputStream) {

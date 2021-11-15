@@ -76,30 +76,30 @@ docker run -p 8081:8081 az-covid19-analysis:0.0.1
 * In the response you will get jwt token copy that token and pass to header Authorization as Bearer Token for `Covid Analysis API's`.
 * Simplest way to use application is:
   * Click on `/api/v1/authenticate` API and then click on `Try it out` button [on top of right side].
-![authenticate1](authentication1.jpeg)
+![authenticate1](doc/authentication1.jpeg)
   * Add username/password and click on execute button
-![authenticate2](authentication2.jpeg)
+![authenticate2](doc/authentication2.jpeg)
   * Copy the jwt from response
-![authenticate3](authentication3.png)
+![authenticate3](doc/authentication3.png)
   * Select any api from `Covid Analysis Controller`
-![covidApi1](covidAPI1.png)
+![covidApi1](doc/covidAPI1.png)
   * Please click lock icon from top right side
   * Past here the copied JWT and click on `Authorize`, then please close the popup.
-![CovidApi2](CovidApi2.png)
+![CovidApi2](doc/CovidApi2.png)
   * Now you can click on `Try it out` button and give required param and then execute. **Date Format is MM-dd-yy**
-![CovidApi3](CovidApi3.png)
+![CovidApi3](doc/CovidApi3.png)
 * Or simple click on lock icon and put `token` (without Bearer)
 
 
 > RESOURCES
 
-![URI-Details](URI.jpeg)
+![URI-Details](doc/URI.jpeg)
 
 
 
 > Test Coverage Report
 
-![JaCoCo-Report](JaCoCoReport.png)
+![JaCoCo-Report](doc/JaCoCoReport.png)
 
 
 
